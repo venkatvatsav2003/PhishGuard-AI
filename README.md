@@ -1,45 +1,32 @@
 # PhishGuard AI
 
-An advanced, machine-learning powered Phishing Detection Engine. PhishGuard AI analyzes incoming emails using Natural Language Processing (NLP) and a Random Forest Classifier to detect malicious intent and credential harvesting attempts.
+A simple machine learning script to detect phishing emails. Built using Python and scikit-learn.
 
-## Features
-- **RESTful API:** Built with FastAPI for high performance and easy integration with email servers or SIEMs.
-- **Machine Learning Pipeline:** Utilizes `scikit-learn` with TF-IDF vectorization and a Random Forest classifier for robust text analysis.
-- **Threat Scoring:** Returns confidence metrics and categorized threat levels for automated incident response.
-- **Scalable:** Designed to handle high-throughput email streams.
+## How it works
+It uses a Random Forest Classifier and TF-IDF to analyze the text of an email (subject, domain, and body) and classify it as either Phishing or Safe. It trains on a small dummy dataset when you run the script.
 
-## Architecture
-Incoming emails (subject, body, sender domain) are passed via JSON payload to the `/api/v1/analyze` endpoint. The text is pre-processed and vectorized using TF-IDF, then fed into the ML model which determines if the semantic structure matches known phishing patterns.
+## Setup
 
-## Setup & Execution
-
-### Requirements
-- Python 3.9+
-
-### Installation
-1. Clone the repository.
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the API server:
-   ```bash
-   uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-   ```
-
-### Usage Example
+1. Install the requirements:
 ```bash
-curl -X 'POST' \
-  'http://localhost:8000/api/v1/analyze' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "subject": "Urgent: Account Suspension Notice",
-  "body": "Your account will be suspended in 24 hours. Click here to verify your details.",
-  "sender_domain": "security-alert-update.com"
-}'
+pip install -r requirements.txt
 ```
 
-## Future Enhancements
-- Integration with external threat intelligence feeds.
-- Advanced URL extraction and sandboxed domain reputation checking.
-- Deep Learning (BERT-based) model integration for better context awareness.
+2. Run the script:
+```bash
+python phishguard.py
+```
+
+## Example Usage
+```text
+Loading and training PhishGuard AI...
+Training complete! Welcome to PhishGuard AI.
+
+--- New Email Check ---
+Enter email subject: Urgent Password Reset
+Enter sender domain (e.g., bank.com): support-alert.com
+Enter email body: Click here to secure your account immediately!
+
+[!] Analyzing...
+RESULT: 🚨 WARNING! This looks like a PHISHING email.
+```
