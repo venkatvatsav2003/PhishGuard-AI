@@ -1,32 +1,39 @@
 # PhishGuard AI
 
-A simple machine learning script to detect phishing emails. Built using Python and scikit-learn.
+A pattern-based phishing email detection tool built with Python. Analyzes email content for common phishing indicators and produces a risk score.
 
-## How it works
-It uses a Random Forest Classifier and TF-IDF to analyze the text of an email (subject, domain, and body) and classify it as either Phishing or Safe. It trains on a small dummy dataset when you run the script.
+## How It Works
+Scans email subject, sender domain, and body against 8 indicator categories:
+- Credential harvesting language
+- Urgency/social engineering tactics
+- Suspicious link patterns
+- Brand impersonation
+- Sensitive information requests
+- Too-good-to-be-true offers
+- Financial scam language
+- Malicious attachment indicators
 
-## Setup
-
-1. Install the requirements:
-```bash
-pip install -r requirements.txt
-```
-
-2. Run the script:
+## Usage
 ```bash
 python phishguard.py
 ```
 
-## Example Usage
-```text
-Loading and training PhishGuard AI...
-Training complete! Welcome to PhishGuard AI.
+Then enter the email details when prompted.
 
---- New Email Check ---
-Enter email subject: Urgent Password Reset
-Enter sender domain (e.g., bank.com): support-alert.com
-Enter email body: Click here to secure your account immediately!
-
-[!] Analyzing...
-RESULT: 🚨 WARNING! This looks like a PHISHING email.
+## Example
 ```
+=== PhishGuard AI ===
+Enter email subject: Urgent Password Reset
+Enter sender domain: secure-bank.com
+Enter email body: Click here to verify your account immediately.
+
+Risk score: 4/8
+Indicators detected: Credential harvesting, Urgency tactic, Suspicious link, Brand impersonation
+Verdict: SUSPICIOUS (Medium Risk)
+```
+
+## Design
+See `DESIGN.md` for architecture, threat model, and design decisions.
+
+## Dependencies
+- Python 3 (no external packages required)
