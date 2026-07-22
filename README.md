@@ -1,67 +1,59 @@
 # PhishGuard AI
 
 ![CI](https://github.com/venkatvatsav2003/PhishGuard-AI/actions/workflows/ci.yml/badge.svg)
-![Version](https://img.shields.io/badge/version-2.0.0-blue)
-![Language](https://img.shields.io/badge/language-Python%20%2B%20Bash-blue)
+![Version](https://img.shields.io/badge/version-3.0.0-blue)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
-An AI-powered phishing email detection engine that combines pattern analysis, domain reputation checking (WHOIS, MX, SPF), URL risk scoring, and behavioral heuristics to classify emails as Safe, Suspicious, or Phishing.
+**Phishing email detection with pattern analysis, domain intelligence, and URL reputation.**
+
+## Install & Run
+
+```bash
+# One-liner
+pip install phishguard && phishguard --interactive
+
+# Or clone and run
+git clone https://github.com/venkatvatsav2003/PhishGuard-AI.git
+cd PhishGuard-AI && pip install -r requirements.txt
+./analyze.sh --interactive
+
+# Analyze an email file
+./analyze.sh -f email.txt
+
+# Docker
+docker-compose run phishguard --interactive
+```
 
 ## Features
 
-- **8-Category Pattern Analysis** — Credential harvesting, urgency, brand impersonation, financial scams, and more
-- **Domain Intelligence** — WHOIS age verification, MX record presence, SPF record validation
-- **URL Analysis** — Suspicious TLD detection, link shortener identification, numerical domain detection
-- **Weighted Scoring** — Configurable per-category weights for risk calculation
-- **Multi-Mode Input** — Interactive, CLI arguments, file-based analysis
-- **JSON Output** — Machine-readable for SIEM/automation integration
-- **No ML Dependencies** — Pure heuristics, no training data needed
-- **CI/CD Ready** — GitHub Actions workflow included
+- **8 Detection Categories** — credential harvesting, urgency, brand impersonation, financial scams, and more
+- **Domain Intelligence** — WHOIS age verification, MX/SPF record checks
+- **URL Analysis** — suspicious TLD detection, link shortener identification
+- **Email Parsing** — analyze `.eml` files directly
+- **Configurable Patterns** — YAML-based rule engine
+- **JSON Output** — machine-readable for automation/SIEM
+- **API Mode** — REST API for integration with mail servers
 
 ## Quick Start
 
 ```bash
-# Interactive analysis
+# Interactive
 ./analyze.sh --interactive
 
-# CLI analysis
-./analyze.sh -s "Urgent Password Reset" -d "secure-bank.com" -b "Click here to verify"
+# CLI
+./analyze.sh -s "Urgent Password Reset" -d "secure-bank.com" -b "Click here"
 
-# File analysis
-./analyze.sh -f email.txt
+# File
+./analyze.sh -f email.eml
 
 # JSON output
 ./analyze.sh --interactive --json
 ```
 
-## Example Output
-
-```
-============================================================
-  PhishGuard AI — Email Analysis Report
-============================================================
-  Subject:    Urgent: Your Account Has Been Suspended
-  From:       secure-bank.com
-  Risk Score: 11/23
-  Verdict:    PHISHING
-
-  Indicators:
-    - Urgency / social engineering tactics
-    - Credential harvesting language
-    - Brand impersonation detected
-    - Suspicious domain (12 days old)
-    - No SPF record
-
-  Domain:
-    Age:       12 days
-    MX Record: YES
-    SPF:       NO
-============================================================
-```
-
 ## Scoring
 
-| Score Range | Verdict | Action |
-|-------------|---------|--------|
+| Score | Verdict | Action |
+|-------|---------|--------|
 | 0-5 | SAFE | Allow delivery |
 | 6-9 | SUSPICIOUS | Flag for review |
 | 10+ | PHISHING | Quarantine / block |
@@ -70,17 +62,14 @@ An AI-powered phishing email detection engine that combines pattern analysis, do
 
 ```
 PhishGuard-AI/
-├── phishguard.py           # Python detection engine
-├── analyze.sh              # Bash orchestrator
-├── config/patterns.yml     # Detection patterns & weights
-├── data/samples/           # Example phishing/safe emails
-├── tests/                  # Pytest suite
-├── reports/                # Analysis output
+├── phishguard.py            # Python engine
+├── analyze.sh               # Bash launcher
+├── pyproject.toml           # pip install
+├── docker-compose.yml       # Docker one-command
+├── .env.example             # Config template
+├── config/patterns.yml      # Detection rules
+├── data/samples/            # Example emails
+├── tests/
 ├── Dockerfile
-├── Makefile
-└── .github/workflows/
+└── Makefile
 ```
-
-## Dependencies
-
-- Python 3.8+ (with `pyyaml`, `python-whois`, `dnspython`)
