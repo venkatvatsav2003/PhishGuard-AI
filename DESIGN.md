@@ -1,48 +1,62 @@
 # PhishGuard AI — Design Document
 
 ## Problem Statement
-Phishing attacks remain one of the most common and effective cyber threats. Traditional spam filters rely on static rule sets that struggle to keep pace with evolving social engineering tactics.
+Phishing attacks account for 90%+ of data breaches. Traditional spam filters struggle with zero-day phishing campaigns that bypass signature-based detection.
 
-## Core Ideology
-Security must be accessible. Not every organization can deploy enterprise-grade ML infrastructure. PhishGuard AI aims to provide a lightweight, transparent phishing detection engine that anyone can run, audit, and extend.
+## Design Philosophy
+Instead of training ML models (data-hungry, opaque, brittle), PhishGuard uses a multi-layer heuristic engine that is:
+- **Interpretable** — every verdict has traceable reasons
+- **Extensible** — add patterns without retraining
+- **Deterministic** — same input always yields same result
+- **Zero-dependency** — no ML frameworks, no training data
 
 ## Architecture
 
 ```
-Email Input
-    |
-    v
-[Text Extraction] --> subject, domain, body
-    |
-    v
-[Pattern Matching Engine] --> 8 indicator categories
-    |
-    v
-[Risk Scorer] --> weighted score based on matched indicators
-    |
-    v
-[Verdict] --> Safe / Suspicious / Phishing
+┌─────────────────────────────────────────────────┐
+│              Input Layer                          │
+│  CLI args │ Interactive │ File │ stdin           │
+└─────────────────────┬───────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────┐
+│              Analysis Pipeline                    │
+│                                                   │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐  │
+│  │ Pattern    │  │ Domain     │  │ URL        │  │
+│  │ Engine     │  │ Analyzer   │  │ Analyzer   │  │
+│  │ (8 cats)   │  │ WHOIS/MX   │  │ TLD/       │  │
+│  │            │  │ SPF        │  │ Shortener  │  │
+│  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘  │
+│        └───────────────┼───────────────┘          │
+└────────────────────────┼──────────────────────────┘
+                         ▼
+┌─────────────────────────────────────────────────┐
+│              Scoring Engine                       │
+│  Weighted sum → Verdict (Safe/Suspicious/Phish)  │
+└─────────────────────┬───────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────┐
+│              Output Layer                         │
+│  Console table │ JSON │ Color-coded verdict       │
+└─────────────────────────────────────────────────┘
 ```
 
-## Detection Categories
-1. **Credential Harvesting** — language asking for account verification, password resets
-2. **Urgency Tactics** — time pressure language ("act now", "limited time")
-3. **Suspicious Links** — disguised or mismatched URLs
-4. **Brand Impersonation** — mentions of known brands/spoofed domains
-5. **Sensitive Info Requests** — asking for passwords, SSN, credit card details
-6. **Too-Good-To-Be-True** — lottery wins, prizes, inheritances
-7. **Financial Scams** — invoice fraud, wire transfer requests
-8. **Malicious Attachments** — unexpected file downloads
+## Detection Categories Researched
+1. **Credential Harvesting** — language patterns used in phishing kits
+2. **Urgency Tactics** — psychological pressure techniques
+3. **Suspicious Links** — URL obfuscation and shortener abuse
+4. **Brand Impersonation** — top 10 most impersonated brands
+5. **Sensitive Info Requests** — data types targeted by phishers
+6. **Too-Good-To-Be-True** — lure tactics
+7. **Financial Scams** — wire fraud, crypto scams
+8. **Spoofed Sender** — display name vs. actual domain mismatches
 
-## Threat Model
-- **Attacker capability**: Social engineering via email
-- **Attack vector**: Spear phishing, whaling, clone phishing
-- **Defense mechanisms**: Pattern matching, domain reputation, linguistic analysis
+## Domain Intelligence
+- **WHOIS Age**: Newly registered domains (<30 days) are high risk
+- **MX Records**: Legitimate domains have mail servers
+- **SPF Records**: Absence indicates unauthenticated sending capability
 
-## Limitations & Future Work
-- Currently uses static pattern matching — could be enhanced with NLP-based analysis
-- No URL reputation checking (future)
-- No attachment sandboxing (future)
-
-## Why This Approach
-Pattern-based detection is interpretable (you can explain why an email was flagged), fast, and requires no external dependencies. It serves as a foundation layer that could feed into a broader security stack.
+## Limitations
+- No NLP/LLM — cannot understand context or sarcasm
+- No attachment scanning — focuses on email content
+- Domain checks require network access

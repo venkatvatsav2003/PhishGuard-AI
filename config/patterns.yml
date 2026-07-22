@@ -1,0 +1,49 @@
+categories:
+  credential_harvesting:
+    weight: 3
+    patterns:
+      - "(verify|confirm|update|restore|recover)\\s.*(account|payment|billing|identity)"
+      - "(sign\\s?in|log\\s?in)\\s.*(problem|issue|failed|attempt)"
+      - "security\\s.*(check|update|verify|alert)"
+  urgency:
+    weight: 2
+    patterns:
+      - "urgent|immediate\\s(action|attention)|time.sensitive|act\\snow"
+      - "account\\s.*(suspended|locked|closed|limited|restricted)"
+      - "(within|before|by)\\s\\d{1,2}\\s?(hour|day)"
+  suspicious_links:
+    weight: 2
+    patterns:
+      - "click\\s.*(here|link|button|below)"
+      - "https?://(bit\\.ly|tinyurl|shorturl|t\\.co|rb\\.gy|ow\\.ly)"
+  brand_impersonation:
+    weight: 2
+    patterns:
+      - "\\b(paypal|amazon|netflix|apple|microsoft|google|chase|wells\\s?fargo)\\b"
+  sensitive_info:
+    weight: 3
+    patterns:
+      - "(password|ssn|social.security|credit.card|cvv|pin|otp)"
+  financial_scam:
+    weight: 2
+    patterns:
+      - "(transfer|wire|money\\sgram|western\\sunion)"
+      - "(crypto|bitcoin|btc|ethereum|wallet)"
+
+domain_check:
+  suspicious_tlds:
+    - .xyz
+    - .top
+    - .club
+    - .work
+    - .download
+    - .review
+    - .date
+    - .men
+  known_shorteners:
+    - bit.ly
+    - tinyurl.com
+    - t.co
+    - ow.ly
+    - rb.gy
+  min_age_days: 30
